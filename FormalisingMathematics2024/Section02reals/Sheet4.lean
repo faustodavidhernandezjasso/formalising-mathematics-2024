@@ -45,7 +45,7 @@ example (x : ℝ) : |-x| = |x| := by exact abs_neg x
 -- Why do this? Because it's quicker!
 
 example (x y : ℝ) : x + y = y + x := by exact add_comm x y
-example (x y : ℝ) : x + (-y) = x - y := by exact?
+example (x y : ℝ) : x + (-y) = x - y := by exact rfl
 
 example (x y : ℝ) : |x - y| = |y - x| := by exact abs_sub_comm x y
 
@@ -67,6 +67,10 @@ example (ε : ℝ) (hε : 0 < ε) : 0 < ε / 3 := by linarith
 
 -- This is too obscure for the library
 example (a b c d x y : ℝ) (h1 : a + c < x) (h2 : b + d < y) : a + b + c + d < x + y := by linarith
-
+example (a : ℝ) : 1 * a = a := by exact?
+example : 37/37 = 1 := by exact?
+example (a : ℝ) (ha : a > 0) : |a| = a := by exact?
+example (a : ℝ) (ha : a > 0) : a / a = 1 := by apply?
+example (a b c: ℝ) (ha: a ≠ 0) : b > c → a*b > a*c := by apply?
 -- note that add_lt_add doesn't work because
 -- ((a+b)+c)+d and (a+c)+(b+d) are not definitionally equal
