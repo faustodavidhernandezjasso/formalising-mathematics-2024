@@ -50,11 +50,89 @@ theorem tendsTo_thirtyseven_mul (a : ℕ → ℝ) (t : ℝ) (h : TendsTo a t) :
   linarith
   exact h
   done
+
+example (a b c: ℝ) (hc: c > 0) : a > b ↔ a*c > b*c := by exact Iff.symm (mul_lt_mul_right hc)
+example (c b: ℝ) : c > 0 ∧ b > 0 ↔ c*b > 0 := by apply?
+example (c b: ℝ) (hc: c > 0) (hb : b > 0) : c * (b / c) = c * b / c := by exact mul_div c b c
+example (c b: ℝ) (hc : 0 < c) (hb : 0 < b) : c * (1 / b) = c*1/b := by exact mul_div c 1 b
+
 /-- If `a(n)` tends to `t` and `c` is a positive constant then
 `c * a(n)` tends to `c * t`. -/
 theorem tendsTo_pos_const_mul {a : ℕ → ℝ} {t : ℝ} (h : TendsTo a t) {c : ℝ} (hc : 0 < c) :
     TendsTo (fun n ↦ c * a n) (c * t) := by
-  sorry
+  rw [tendsTo_def] at *
+  intros ε hε
+  rw [← one_div_pos] at hc
+  have hεc : (0 < ε / c)
+  rw [← one_mul ε]
+  rw [mul_comm 1 ε]
+  rw [← mul_div ε 1 c]
+  apply mul_pos hε hc
+  specialize h (ε / c) (by linarith)
+  cases' h with x hx
+  use x
+  intro n hn
+  rw [← mul_sub_left_distrib]
+  rw [abs_mul]
+  rw [← one_mul ε]
+  rw [one_div_pos] at hc
+  rw [← div_self hc.ne']
+  rw [abs_of_pos]
+  rw [mul_comm (c/c) ε]
+  rw [mul_div ε c c]
+  rw [mul_comm ε c]
+  specialize hx n hn
+  rw [← mul_lt_mul_left hc] at hx
+  rw [mul_div c ε c] at hx
+  exact hx
+  exact hc
+  done
+  -- by_cases hnc: c = 0
+  -- rw [hnc]
+  -- simp
+  -- use 0
+  -- intros n hn
+  -- exact hε
+  -- have he : ¬c = 0 ↔ c ≠ 0
+  -- simp
+  -- rw [he] at hnc
+  -- rw [@ne_iff_lt_or_gt] at hnc
+  -- cases' hnc with hp hn
+  -- specialize h (ε / c) (by linarith)
+  -- cases' h with x hx
+  -- use x
+  -- intros n hn
+  -- rw [← mul_sub_left_distrib]
+  -- rw [abs_mul]
+  -- rw [← one_mul ε]
+  -- rw [← div_self hc.ne']
+  -- rw [abs_of_pos]
+  -- rw [mul_comm (c/c) ε]
+  -- rw [mul_div ε c c]
+  -- rw [mul_comm ε c]
+  -- specialize hx n hn
+  -- linarith
+  -- exact hc
+
+
+  -- specialize h (ε / c) (by linarith)
+  -- cases' h with x hx
+  -- use x
+  -- intros n hn
+  -- rw [← mul_sub_left_distrib]
+  -- rw [abs_mul]
+  -- rw [← one_mul ε]
+  -- have h : (37 : ℝ) > 0
+  -- linarith
+  -- rw [← div_self h.ne']
+  -- rw [abs_of_pos]
+  -- rw [mul_comm (37/37) ε]
+  -- rw [mul_div ε 37 37]
+  -- rw [mul_comm ε 37]
+  -- specialize hx n hn
+  -- linarith
+  -- exact h
+  -- done
 
 /-- If `a(n)` tends to `t` and `c` is a negative constant then
 `c * a(n)` tends to `c * t`. -/
